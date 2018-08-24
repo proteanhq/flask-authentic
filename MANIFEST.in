@@ -7,6 +7,7 @@ include .bumpversion.cfg
 include .coveragerc
 include .cookiecutterrc
 include .editorconfig
+include .pylintrc
 
 include AUTHORS.rst
 include CHANGELOG.rst
@@ -17,3 +18,6 @@ include README.rst
 include tox.ini .travis.yml appveyor.yml
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
+
+include *.txt
+recursive-include requirements *.txt

@@ -14,7 +14,6 @@ Overview
         |
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
-        | |commits-since|
 
 .. |docs| image:: https://readthedocs.org/projects/flask-authentic/badge/?style=flat
     :target: https://readthedocs.org/projects/flask-authentic
@@ -22,23 +21,19 @@ Overview
 
 .. |version| image:: https://img.shields.io/pypi/v/flask-authentic.svg
     :alt: PyPI Package latest release
-    :target: https://pypi.python.org/pypi/flask-authentic
-
-.. |commits-since| image:: https://img.shields.io/github/commits-since/proteanhq/flask-authentic/v0.0.1.svg
-    :alt: Commits since latest release
-    :target: https://github.com/proteanhq/flask-authentic/compare/v0.0.1...master
+    :target: https://pypi.org/project/flask-authentic
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/flask-authentic.svg
     :alt: PyPI Wheel
-    :target: https://pypi.python.org/pypi/flask-authentic
+    :target: https://pypi.org/project/flask-authentic
 
 .. |supported-versions| image:: https://img.shields.io/pypi/pyversions/flask-authentic.svg
     :alt: Supported versions
-    :target: https://pypi.python.org/pypi/flask-authentic
+    :target: https://pypi.org/project/flask-authentic
 
 .. |supported-implementations| image:: https://img.shields.io/pypi/implementation/flask-authentic.svg
     :alt: Supported implementations
-    :target: https://pypi.python.org/pypi/flask-authentic
+    :target: https://pypi.org/project/flask-authentic
 
 
 .. end-badges
@@ -61,6 +56,10 @@ https://flask-authentic.readthedocs.io/
 
 Development
 ===========
+
+::
+
+    pyenv virtualenv -p python3.6 3.6.5 protean-flask-dev
 
 To run the all tests run::
 
