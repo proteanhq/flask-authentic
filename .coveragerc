@@ -9,6 +9,7 @@ source =
     flask_authentic
     tests
 parallel = true
+omit = */__main__.py
 
 [report]
 show_missing = true
