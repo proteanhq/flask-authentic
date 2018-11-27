@@ -1,4 +1,5 @@
 from click.testing import CliRunner
+
 from flask_authentic.cli import main
 
 
