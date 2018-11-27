@@ -23,14 +23,14 @@ class AccountViewMixin:
 
     def get_schema_cls(self):
         """ Get the schema class from the config """
-        if not hasattr(active_config, 'ACCOUNT_SCHEMA_CLS'):
+        if not active_config.ACCOUNT_SCHEMA_CLS:
             raise ConfigurationError(
                 '`ACCOUNT_SCHEMA_CLS` has not been set in the config.')
         return perform_import(active_config.ACCOUNT_SCHEMA_CLS)
 
     def get_serializer_cls(self):
         """ Get the serializer class from the settings"""
-        if not hasattr(active_config, 'ACCOUNT_SERIALIZER_CLS'):
+        if not active_config.ACCOUNT_SERIALIZER_CLS:
             raise ConfigurationError(
                 '`ACCOUNT_SERIALIZER_CLS` has not been set in the config.')
         return perform_import(active_config.ACCOUNT_SERIALIZER_CLS)
