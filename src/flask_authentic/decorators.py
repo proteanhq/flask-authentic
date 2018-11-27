@@ -1,24 +1,50 @@
 """ Decorators for handling authentications and permissions """
 from functools import wraps
-from flask import request, redirect, url_for
+
+from flask import request, current_app
+
+from protean.core.tasklet import Tasklet
+from protean.core.repository import repo
+from protean.utils.importlib import perform_import
+from protean.conf import active_config
+
+from authentic.helper import get_auth_backend
 
 
 def is_authenticated(optional=False):
-    """ Check permissions using each of the classes defined """
+    """ Decorator for checking if the request is authenticated """
     def wrapper(f):
-        """ Decorator for """
+        """ Wrapper function of the decorator """
         @wraps(f)
         def wrapped_f(*args, **kwargs):
-            return f(*args, **kwargs)
-        return wrapped_f
-    return wrapper
+            """ Actual function for checking authentication """
 
+            # Get the authorization header and build payload
+            auth_header = request.headers.get('Authorization', '').split()
+            auth_payload = {}
+            if auth_header and len(auth_header) == 2:
+                auth_payload['auth_scheme'] = auth_header[0]
+                auth_payload['credentials'] = auth_header[1]
 
-def has_permissions(permission_classes=()):
-    """ Check permissions using each of the classes defined """
-    def wrapper(f):
-        @wraps(f)
-        def wrapped_f(*args, **kwargs):
+            # Get the schema and the current backend
+            account_schema = perform_import(active_config.ACCOUNT_SCHEMA_CLS)
+            auth_backend = get_auth_backend()
+
+            # Perform the task and check the response
+            response = Tasklet.perform(
+                repo, account_schema, auth_backend.AuthenticationUseCase,
+                auth_backend.AuthenticationRequestObject, auth_payload)
+
+            # If the task failed and authentication is not optional
+            # then return unauthorized
+            if not response.success and not optional:
+                renderer = perform_import(
+                    current_app.config['DEFAULT_RENDERER'])
+                return renderer(response.value, 401, {})
+
+            # Set the account on the request and call the actual function
+            request.account = response.value if response.success else None
             return f(*args, **kwargs)
+        
         return wrapped_f
     return wrapper
