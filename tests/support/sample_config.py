@@ -2,7 +2,7 @@
 Default settings. Override these with settings in the module pointed to
 by the PROTEAN_CONFIG environment variable.
 """
- ####################
+####################
 # CORE             #
 ####################
 

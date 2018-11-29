@@ -1,6 +1,9 @@
 """ Test the account views of authentic flask """
 import json
+import base64
+
 from passlib.hash import pbkdf2_sha256
+
 from protean.core.repository import repo
 
 from tests.support.sample_app import app
@@ -15,6 +18,10 @@ class TestViews:
 
         # Create the test client
         cls.client = app.test_client()
+        cls.auth_header = {
+            'Authorization': b'Basic ' +
+                             base64.b64encode(b'janedoe:duMmy@123')
+        }
 
         # Create a test account
         cls.account = repo.AccountSchema.create({
@@ -24,6 +31,8 @@ class TestViews:
             'password': pbkdf2_sha256.hash('duMmy@123'),
             'phone': '90080000800',
         })
+
+        # build the
 
     @classmethod
     def teardown_class(cls):
@@ -43,7 +52,7 @@ class TestViews:
         }
         rv = self.client.post(
             '/auth/accounts', data=json.dumps(account_info),
-            content_type='application/json')
+            headers=self.auth_header, content_type='application/json')
         assert rv.status_code == 201
         
         expected_resp = {
@@ -64,13 +73,12 @@ class TestViews:
         """ Test updating an existing account """
 
         # update an account object
-        account_update = {
+        update_info = {
             'phone': '9007007007',
         }
         rv = self.client.put(
-            f'/auth/accounts/{self.account.id}',
-            data=json.dumps(account_update),
-            content_type='application/json')
+            f'/auth/accounts/{self.account.id}', data=json.dumps(update_info),
+            headers=self.auth_header, content_type='application/json')
         assert rv.status_code == 200
         expected_resp = {
             'account': {'email': 'janedoe@domain.com',
@@ -86,6 +94,40 @@ class TestViews:
         }
         assert rv.json == expected_resp
 
+    def test_login(self):
+        """ Test logging in using account credentials """
+
+        # Send the login request
+        credentials = {
+            'username_or_email': 'johnny',
+            'password': 'heLLo@79',
+        }
+        rv = self.client.post(
+            f'/auth/login', data=json.dumps(credentials),
+            content_type='application/json')
+        assert rv.status_code == 422
+        assert rv.json == {'code': 422,
+                           'message': {'password': 'Password is not correct.'}}
+
+        # Try using the right credentials
+        credentials['password'] = 'heLLo@123'
+        rv = self.client.post(
+            f'/auth/login', data=json.dumps(credentials),
+            content_type='application/json')
+        assert rv.status_code == 200
+        assert rv.json['username'] == 'johnny'
+
+    def test_logout(self):
+        """ Test logging out of the application """
+
+        # Send the logout request
+        rv = self.client.post(
+            '/auth/logout', data=json.dumps({}), headers=self.auth_header,
+            content_type='application/json')
+
+        assert rv.status_code == 200
+        assert rv.json == {'message': 'success'}
+
     def test_update_password(self):
         """ Test updating password of an account """
 
@@ -96,9 +138,8 @@ class TestViews:
             'confirm_password': 'duMmy@456',
         }
         rv = self.client.post(
-            f'/auth/accounts/{self.account.id}/change-password',
-            data=json.dumps(password_update),
-            content_type='application/json')
+            '/auth/accounts/change-password', data=json.dumps(password_update),
+            headers=self.auth_header, content_type='application/json')
         assert rv.status_code == 200
         
         expected_resp = {'message': 'Success'}
@@ -134,26 +175,3 @@ class TestViews:
 
         expected_resp = {'message': 'Success'}
         assert rv.json == expected_resp
-
-    def test_login(self):
-        """ Test logging in using account credentials """
-
-        # Send the login request
-        credentials = {
-            'username_or_email': 'johnny',
-            'password': 'heLLo@79',
-        }
-        rv = self.client.post(
-            f'/auth/login', data=json.dumps(credentials),
-            content_type='application/json')
-        assert rv.status_code == 422
-        assert rv.json == {'code': 422,
-                           'message': {'password': 'Password is not correct.'}}
-
-        # Try using the right credentials
-        credentials['password'] = 'heLLo@123'
-        rv = self.client.post(
-            f'/auth/login', data=json.dumps(credentials),
-            content_type='application/json')
-        assert rv.status_code == 200
-        assert rv.json['username'] == 'johnny'

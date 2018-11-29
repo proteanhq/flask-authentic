@@ -3,7 +3,8 @@ from flask import Blueprint
 
 from flask_authentic.views import (CreateAccountResource, UpdateAccountResource,
                                    ChangePasswordResource, ResetPasswordResource,
-                                   SendResetPasswordEmailResource, LoginResource)
+                                   SendResetPasswordEmailResource, LoginResource,
+                                   LogoutResource)
 
 
 account_bp = Blueprint('accounts', __name__)
@@ -17,7 +18,7 @@ account_bp.add_url_rule(
     view_func=UpdateAccountResource.as_view('update_account'))
 
 account_bp.add_url_rule(
-    '/accounts/<int:identifier>/change-password', methods=['POST'],
+    '/accounts/change-password', methods=['POST'],
     view_func=ChangePasswordResource.as_view('change_password'))
 
 account_bp.add_url_rule(
@@ -31,3 +32,5 @@ account_bp.add_url_rule(
 account_bp.add_url_rule(
     '/login', methods=['POST'], view_func=LoginResource.as_view('login'))
 
+account_bp.add_url_rule(
+    '/logout', methods=['POST'], view_func=LogoutResource.as_view('logout'))

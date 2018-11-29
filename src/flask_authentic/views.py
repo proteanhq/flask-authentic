@@ -12,7 +12,8 @@ from authentic.usecases.core import \
      ChangeAccountPasswordUseCase, ChangeAccountPasswordRequestObject,
      SendResetPasswordEmailUsecase, SendResetPasswordEmailRequestObject,
      ResetPasswordUsecase, ResetPasswordRequestObject,
-     LoginUseCase, LoginRequestObject)
+     LoginUseCase, LoginRequestObject, LogoutUseCase, LogoutRequestObject)
+from .decorators import is_authenticated
 
 from protean_flask.core.views import (CreateAPIResource, UpdateAPIResource,
                                       GenericAPIResource)
@@ -40,26 +41,27 @@ class CreateAccountResource(AccountViewMixin, CreateAPIResource):
     """ API View for creating an account """
     request_object_cls = CreateAccountRequestObject
     usecase_cls = CreateAccountUseCase
+    decorators = [is_authenticated()]
 
 
 class UpdateAccountResource(AccountViewMixin, UpdateAPIResource):
     """ API View for updating an account """
     request_object_cls = UpdateAccountRequestObject
     usecase_cls = UpdateAccountUseCase
+    decorators = [is_authenticated()]
 
 
 class ChangePasswordResource(AccountViewMixin, GenericAPIResource):
     """ API View for updating the account password """
     request_object_cls = ChangeAccountPasswordRequestObject
     usecase_cls = ChangeAccountPasswordUseCase
+    decorators = [is_authenticated()]
 
-    def post(self, identifier):
+    def post(self):
         """Change the password for the account
-         Expected Parameters:
-             identifier = <int/string>, identifies the entity
         """
         payload = {
-            'identifier': identifier,
+            'identifier': request.account.id,
             'data': request.payload
         }
         return self._process_request(
@@ -113,3 +115,17 @@ class LoginResource(AccountViewMixin, GenericAPIResource):
         if isinstance(response, Entity):
             return response.to_dict()
         return response
+
+
+class LogoutResource(AccountViewMixin, GenericAPIResource):
+    """ API View for logging in to the App"""
+    request_object_cls = LogoutRequestObject
+    usecase_cls = LogoutUseCase
+    decorators = [is_authenticated()]
+
+    def post(self):
+        """Logout of the application
+        """
+        return self._process_request(
+            self.usecase_cls, self.request_object_cls,
+            payload={'account': request.account}, no_serialization=True)
