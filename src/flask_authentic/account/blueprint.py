@@ -1,10 +1,10 @@
 """ Blueprint for registering with a flask application """
 from flask import Blueprint
 
-from flask_authentic.views import (CreateAccountResource, UpdateAccountResource,
-                                   ChangePasswordResource, ResetPasswordResource,
-                                   SendResetPasswordEmailResource, LoginResource,
-                                   LogoutResource)
+from .views import (CreateAccountResource, UpdateAccountResource,
+                    ChangePasswordResource, ResetPasswordResource,
+                    SendResetPasswordEmailResource, LoginResource,
+                    LogoutResource)
 
 
 account_bp = Blueprint('accounts', __name__)

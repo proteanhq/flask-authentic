@@ -13,7 +13,7 @@ from authentic.usecases.core import \
      SendResetPasswordEmailUsecase, SendResetPasswordEmailRequestObject,
      ResetPasswordUsecase, ResetPasswordRequestObject,
      LoginUseCase, LoginRequestObject, LogoutUseCase, LogoutRequestObject)
-from .decorators import is_authenticated
+from flask_authentic.decorators import is_authenticated
 
 from protean_flask.core.views import (CreateAPIResource, UpdateAPIResource,
                                       GenericAPIResource)

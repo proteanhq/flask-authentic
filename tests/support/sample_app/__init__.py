@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from protean_flask import Protean
 from protean_flask.core.views import ShowAPIResource
 
-from flask_authentic.blueprint import account_bp
+from flask_authentic.account import account_bp
 from flask_authentic.decorators import is_authenticated
 
 from .serializers import AccountSerializer
