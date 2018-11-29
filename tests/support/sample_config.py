@@ -27,3 +27,21 @@ ACCOUNT_SCHEMA_CLS = 'tests.support.sample_app.schemas.AccountSchema'
 ACCOUNT_SERIALIZER_CLS = 'tests.support.sample_app.serializers.AccountSerializer'
 
 AUTHENTICATION_BACKEND = 'authentic.backends.basic'
+
+# Email Configuration
+DEFAULT_FROM_EMAIL = 'johndoe@domain.com'
+
+
+def build_reset_email(recipient, token):
+    """ Build the email for resetting the password"""
+    from protean.services.email import EmailMessage
+
+    message = EmailMessage(
+        subject='Password Reset Request',
+        body=f'Your reset secret token is {token}',
+        to=[recipient]
+    )
+    return message
+
+
+RESET_EMAIL_CALLBACK = build_reset_email
