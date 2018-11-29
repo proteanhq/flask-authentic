@@ -32,8 +32,6 @@ class TestViews:
             'phone': '90080000800',
         })
 
-        # build the
-
     @classmethod
     def teardown_class(cls):
         """ Teardown for this test case """

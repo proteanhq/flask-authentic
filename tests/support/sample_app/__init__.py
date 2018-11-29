@@ -9,6 +9,7 @@ from flask_authentic.decorators import is_authenticated
 
 from .serializers import AccountSerializer
 from .schemas import AccountSchema
+from .views import HumanResourceSet
 
 app = Flask(__name__)
 api = Protean(app)
@@ -35,3 +36,4 @@ app.add_url_rule('/accounts/<int:identifier>',
                  view_func=SomeProtectedView.as_view('show_account'))
 
 app.add_url_rule('/accounts/current', view_func=get_current_account)
+api.register_viewset(HumanResourceSet, 'humans', '/humans', pk_type='int')
