@@ -1,5 +1,5 @@
 """ Serializers used by the sample app """
-from flask import request
+from protean.context import context
 
 from protean_flask.core.serializers import EntitySerializer, ma
 
@@ -24,8 +24,8 @@ class HumanSerializer(EntitySerializer):
 
     def get_current_account(self, obj):
         """ Return the current logged in user """
-        if request.account:
-            return request.account.id
+        if context.account:
+            return context.account.id
         else:
             return None
 

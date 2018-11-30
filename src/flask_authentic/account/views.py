@@ -1,6 +1,7 @@
 """ Views for managing accounts and authentication """
 from flask import request
 
+from protean.context import context
 from protean.core.entity import Entity
 from protean.conf import active_config
 from protean.core.exceptions import ConfigurationError
@@ -61,7 +62,7 @@ class ChangePasswordResource(AccountViewMixin, GenericAPIResource):
         """Change the password for the account
         """
         payload = {
-            'identifier': request.account.id,
+            'identifier': context.account.id,
             'data': request.payload
         }
         return self._process_request(
@@ -128,4 +129,4 @@ class LogoutResource(AccountViewMixin, GenericAPIResource):
         """
         return self._process_request(
             self.usecase_cls, self.request_object_cls,
-            payload={'account': request.account}, no_serialization=True)
+            payload={'account': context.account}, no_serialization=True)

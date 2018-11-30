@@ -1,6 +1,8 @@
 """ Sample Protean Flask app for testing"""
 from flask import Flask, request, jsonify
 
+from protean.context import context
+
 from protean_flask import Protean
 from protean_flask.core.views import ShowAPIResource
 
@@ -25,8 +27,8 @@ class SomeProtectedView(ShowAPIResource):
 @ is_authenticated(optional=True)
 def get_current_account():
     """ View to test optional authentication """
-    if request.account:
-        return jsonify({'account': request.account.username})
+    if context.account:
+        return jsonify({'account': context.account.username})
     else:
         return jsonify({'account': 'anonymous'})
 

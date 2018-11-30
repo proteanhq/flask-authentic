@@ -1,6 +1,5 @@
 """ Decorators for handling authentications and permissions """
 from functools import wraps
-
 from flask import request
 
 from protean.core.tasklet import Tasklet
@@ -8,6 +7,7 @@ from protean.core.repository import repo
 from protean.core.exceptions import ConfigurationError
 from protean.utils.importlib import perform_import
 from protean.conf import active_config
+from protean.context import context
 
 from authentic.helper import get_auth_backend
 
@@ -53,7 +53,9 @@ def is_authenticated(optional=False):
                 return renderer(response.value, 401, {})
 
             # Set the account on the request and call the actual function
-            request.account = response.value if response.success else None
+            context.set_context({
+                'account': response.value if response.success else None
+            })
             return f(*args, **kwargs)
         
         return wrapped_f
@@ -81,7 +83,9 @@ def authenticated_viewset():
                 return renderer(response.value, 401, {})
 
             # Set the account on the request and call the actual function
-            request.account = response.value if response.success else None
+            context.set_context({
+                'account': response.value if response.success else None
+            })
             return f(*args, **kwargs)
 
         return wrapped_f
