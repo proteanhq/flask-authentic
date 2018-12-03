@@ -9,7 +9,7 @@ from protean.utils.importlib import perform_import
 from protean.conf import active_config
 from protean.context import context
 
-from authentic.helper import get_auth_backend
+from authentic.utils import get_auth_backend
 
 
 def perform_authentication():
