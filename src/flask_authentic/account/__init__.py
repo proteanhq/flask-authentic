@@ -1,5 +1,5 @@
 """ Account related modules of Flask Authentic """
-from .blueprint import account_bp
+from .blueprint import create_blueprint
 
 
-__all__ = ('account_bp',)
+__all__ = ('create_blueprint',)

@@ -6,7 +6,7 @@ from protean.context import context
 from protean_flask import Protean
 from protean_flask.core.views import ShowAPIResource
 
-from flask_authentic.account import account_bp
+from flask_authentic.account import create_blueprint
 from flask_authentic.decorators import is_authenticated
 
 from .serializers import AccountSerializer
@@ -33,7 +33,7 @@ def get_current_account():
         return jsonify({'account': 'anonymous'})
 
 
-app.register_blueprint(account_bp, url_prefix='/auth')
+app.register_blueprint(create_blueprint(pk_type='int'), url_prefix='/auth')
 app.add_url_rule('/accounts/<int:identifier>',
                  view_func=SomeProtectedView.as_view('show_account'))
 

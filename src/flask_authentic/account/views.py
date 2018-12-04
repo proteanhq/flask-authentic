@@ -17,7 +17,8 @@ from authentic.usecases.core import \
 from flask_authentic.decorators import is_authenticated
 
 from protean_flask.core.views import (CreateAPIResource, UpdateAPIResource,
-                                      GenericAPIResource)
+                                      GenericAPIResource, ListAPIResource,
+                                      ShowAPIResource, DeleteAPIResource)
 
 
 class AccountViewMixin:
@@ -49,6 +50,21 @@ class UpdateAccountResource(AccountViewMixin, UpdateAPIResource):
     """ API View for updating an account """
     request_object_cls = UpdateAccountRequestObject
     usecase_cls = UpdateAccountUseCase
+    decorators = [is_authenticated()]
+
+
+class ListAccountResource(AccountViewMixin, ListAPIResource):
+    """ API View for list an accounts """
+    decorators = [is_authenticated()]
+
+
+class ShowAccountResource(AccountViewMixin, ShowAPIResource):
+    """ API View for showing an account """
+    decorators = [is_authenticated()]
+
+
+class DeleteAccountResource(AccountViewMixin, DeleteAPIResource):
+    """ API View for deleting an account """
     decorators = [is_authenticated()]
 
 

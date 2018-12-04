@@ -92,6 +92,26 @@ class TestViews:
         }
         assert rv.json == expected_resp
 
+    def test_show(self):
+        """ Test showing an existing account """
+
+        rv = self.client.get(
+            f'/auth/accounts/{self.account.id}', headers=self.auth_header)
+        assert rv.status_code == 200
+        expected_resp = {
+            'account': {'email': 'janedoe@domain.com',
+                        'id': self.account.id,
+                        'is_active': True,
+                        'is_locked': False,
+                        'is_verified': False,
+                        'name': 'Jane Doe',
+                        'phone': '9007007007',
+                        'timezone': None,
+                        'title': None,
+                        'username': 'janedoe'}
+        }
+        assert rv.json == expected_resp
+
     def test_login(self):
         """ Test logging in using account credentials """
 
@@ -173,3 +193,13 @@ class TestViews:
 
         expected_resp = {'message': 'Success'}
         assert rv.json == expected_resp
+
+    def test_delete(self):
+        """ Test deleting an existing account """
+        auth_header = {
+            'Authorization': b'Basic ' +
+                             base64.b64encode(b'janedoe:duMmy@789')
+        }
+        rv = self.client.delete(
+            f'/auth/accounts/{self.account.id}', headers=auth_header)
+        assert rv.status_code == 204
