@@ -1,9 +1,8 @@
 """ Serializers used by the sample app """
-from protean.context import context
-
-from protean_flask.core.serializers import EntitySerializer, ma
-
 from authentic.entities import Account
+from protean.context import context
+from protean_flask.core.serializers import EntitySerializer
+from protean_flask.core.serializers import ma
 
 from .entities import Human
 

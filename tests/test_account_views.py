@@ -1,11 +1,9 @@
 """ Test the account views of authentic flask """
-import json
 import base64
+import json
 
 from passlib.hash import pbkdf2_sha256
-
 from protean.core.repository import repo
-
 from tests.support.sample_app import app
 
 
@@ -52,7 +50,7 @@ class TestViews:
             '/auth/accounts', data=json.dumps(account_info),
             headers=self.auth_header, content_type='application/json')
         assert rv.status_code == 201
-        
+
         expected_resp = {
             'account':  {'email': 'johnny@domain.com',
                          'id': rv.json['account']['id'],
@@ -159,7 +157,7 @@ class TestViews:
             '/auth/accounts/change-password', data=json.dumps(password_update),
             headers=self.auth_header, content_type='application/json')
         assert rv.status_code == 200
-        
+
         expected_resp = {'message': 'Success'}
         assert rv.json == expected_resp
 

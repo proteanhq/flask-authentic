@@ -1,8 +1,8 @@
 """ Schemas used by the sample app"""
+from authentic.entities import Account
+from authentic.entities import Session
 from protean.core.repository import repo
 from protean.impl.repository.dict_repo import DictSchema
-
-from authentic.entities import Account, Session
 
 from .entities import Human
 

@@ -2,9 +2,7 @@
 import base64
 
 from passlib.hash import pbkdf2_sha256
-
 from protean.core.repository import repo
-
 from tests.support.sample_app import app
 
 

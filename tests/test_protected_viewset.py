@@ -1,11 +1,9 @@
 """Module to test Protected Viewset functionality and features"""
-import json
 import base64
+import json
 
 from passlib.hash import pbkdf2_sha256
-
 from protean.core.repository import repo
-
 from tests.support.sample_app import app
 
 
@@ -73,17 +71,15 @@ class TestGenericAPIResourceSet:
         rv = self.client.get('/humans?order_by[]=id')
         assert rv.status_code == 200
         assert rv.json['total'] == 2
-        assert rv.json['humans'][0] == \
-               {'id': 2, 'name': 'Jane', 'contact': None,
-                'current_account': None}
+        assert rv.json['humans'][0] == {'id': 2, 'name': 'Jane',
+                                        'contact': None, 'current_account': None}
 
         # Fetch again with authentication
         rv = self.client.get('/humans?order_by[]=id', headers=self.auth_header)
         assert rv.status_code == 200
         assert rv.json['total'] == 2
-        assert rv.json['humans'][0] == \
-               {'id': 2, 'name': 'Jane', 'contact': None,
-                'current_account': self.account.id}
+        assert rv.json['humans'][0] == {'id': 2, 'name': 'Jane',
+                                        'contact': None, 'current_account': self.account.id}
 
     def test_set_create(self):
         """ Test creating an entity using the resource set """

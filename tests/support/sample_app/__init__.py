@@ -1,16 +1,15 @@
 """ Sample Protean Flask app for testing"""
-from flask import Flask, request, jsonify
-
+from flask import Flask
+from flask import jsonify
 from protean.context import context
-
 from protean_flask import Protean
 from protean_flask.core.views import ShowAPIResource
 
 from flask_authentic.account import create_blueprint
 from flask_authentic.decorators import is_authenticated
 
-from .serializers import AccountSerializer
 from .schemas import AccountSchema
+from .serializers import AccountSerializer
 from .views import HumanResourceSet
 
 app = Flask(__name__)

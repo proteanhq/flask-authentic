@@ -1,11 +1,16 @@
 """ Blueprint for registering with a flask application """
 from flask import Blueprint
 
-from .views import (CreateAccountResource, UpdateAccountResource,
-                    ListAccountResource, ShowAccountResource,
-                    DeleteAccountResource, ChangePasswordResource,
-                    ResetPasswordResource, SendResetPasswordEmailResource,
-                    LoginResource, LogoutResource)
+from .views import ChangePasswordResource
+from .views import CreateAccountResource
+from .views import DeleteAccountResource
+from .views import ListAccountResource
+from .views import LoginResource
+from .views import LogoutResource
+from .views import ResetPasswordResource
+from .views import SendResetPasswordEmailResource
+from .views import ShowAccountResource
+from .views import UpdateAccountResource
 
 
 def create_blueprint(
