@@ -29,7 +29,7 @@ def read(*names, **kwargs):
 
 setup(
     name='flask-authentic',
-    version='0.0.1',
+    version='0.0.5',
     license='BSD 3-Clause License',
     description='Flask Authentic Extension',
     long_description='%s\n%s' % (

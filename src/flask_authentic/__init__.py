@@ -2,7 +2,7 @@ from protean.conf import active_config
 
 from . import config
 
-__version__ = '0.0.1'
+__version__ = '0.0.5'
 
 
 # Update the config here so that loading the repo will load the config
