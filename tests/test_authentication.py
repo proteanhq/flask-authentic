@@ -1,9 +1,9 @@
 """ Test the authentication mechanism of authentic flask """
 import base64
 
+from authentic.utils import get_account_entity
 from passlib.hash import pbkdf2_sha256
 from protean.core.repository import repo_factory
-from authentic.utils import get_account_entity
 from tests.support.sample_app import app
 
 Account = get_account_entity()

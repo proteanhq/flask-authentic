@@ -1,13 +1,13 @@
 """ Decorators for handling authentications and permissions """
 from functools import wraps
 
+from authentic.utils import get_account_entity
 from authentic.utils import get_auth_backend
 from flask import request
 from protean.conf import active_config
 from protean.context import context
 from protean.core.tasklet import Tasklet
 from protean.utils.importlib import perform_import
-from authentic.utils import get_account_entity
 
 from . import logger
 

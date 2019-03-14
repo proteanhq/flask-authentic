@@ -1,11 +1,4 @@
 """ Views for managing accounts and authentication """
-
-from flask import request
-from protean.conf import active_config
-from protean.context import context
-from protean.core.entity import Entity
-from protean.core.exceptions import ConfigurationError
-from protean.utils.importlib import perform_import
 from authentic.usecases.core import ChangeAccountPasswordRequestObject
 from authentic.usecases.core import ChangeAccountPasswordUseCase
 from authentic.usecases.core import CreateAccountRequestObject
@@ -20,6 +13,12 @@ from authentic.usecases.core import SendResetPasswordEmailRequestObject
 from authentic.usecases.core import SendResetPasswordEmailUsecase
 from authentic.usecases.core import UpdateAccountRequestObject
 from authentic.usecases.core import UpdateAccountUseCase
+from flask import request
+from protean.conf import active_config
+from protean.context import context
+from protean.core.entity import Entity
+from protean.core.exceptions import ConfigurationError
+from protean.utils.importlib import perform_import
 from protean_flask.core.views import CreateAPIResource
 from protean_flask.core.views import DeleteAPIResource
 from protean_flask.core.views import GenericAPIResource
