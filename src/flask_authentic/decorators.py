@@ -91,7 +91,6 @@ def authenticated_viewset():
                         '_entity': 'Authentication Failed'
                     }
                 }
-                print(response.value)
                 logger.debug(
                     f'Authentication failed due to error: {response.value}')
                 return renderer(error_message, 401, {})
