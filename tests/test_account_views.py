@@ -3,8 +3,12 @@ import base64
 import json
 
 from passlib.hash import pbkdf2_sha256
-from protean.core.repository import repo
-from tests.support.sample_app import app
+from protean.core.repository import repo_factory
+from authentic.utils import get_account_entity
+
+from .support.sample_app import app
+
+Account = get_account_entity()
 
 
 class TestViews:
@@ -22,7 +26,7 @@ class TestViews:
         }
 
         # Create a test account
-        cls.account = repo.AccountSchema.create({
+        cls.account = Account.create({
             'email': 'janedoe@domain.com',
             'username': 'janedoe',
             'name': 'Jane Doe',
@@ -33,7 +37,7 @@ class TestViews:
     @classmethod
     def teardown_class(cls):
         """ Teardown for this test case """
-        repo.AccountSchema.delete_all()
+        repo_factory.Account.delete_all()
 
     def test_create(self):
         """ Test creating an account """
@@ -175,7 +179,7 @@ class TestViews:
         assert rv.json == expected_resp
 
         # Get the verification token for the account
-        account = repo.AccountSchema.get(self.account.id)
+        account = Account.get(self.account.id)
         assert account.verification_token is not None
 
         # Send the reset password request

@@ -4,12 +4,12 @@ from flask import jsonify
 from protean.context import context
 from protean_flask import Protean
 from protean_flask.core.views import ShowAPIResource
-
+from authentic.utils import get_account_entity
 from flask_authentic.account import create_blueprint
 from flask_authentic.decorators import is_authenticated
 
-from .schemas import AccountSchema
 from .serializers import AccountSerializer
+from .models import AccountModel  # noqa: F401
 from .views import HumanResourceSet
 
 app = Flask(__name__)
@@ -18,7 +18,7 @@ api = Protean(app)
 
 class SomeProtectedView(ShowAPIResource):
     """ A simple protected class based view """
-    schema_cls = AccountSchema
+    entity_cls = get_account_entity()
     serializer_cls = AccountSerializer
     decorators = [is_authenticated()]
 

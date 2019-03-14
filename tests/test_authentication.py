@@ -2,8 +2,11 @@
 import base64
 
 from passlib.hash import pbkdf2_sha256
-from protean.core.repository import repo
+from protean.core.repository import repo_factory
+from authentic.utils import get_account_entity
 from tests.support.sample_app import app
+
+Account = get_account_entity()
 
 
 class TestAuthentication:
@@ -16,7 +19,7 @@ class TestAuthentication:
         cls.client = app.test_client()
 
         # Create a test account
-        cls.account = repo.AccountSchema.create({
+        cls.account = Account.create({
             'email': 'johndoe@domain.com',
             'username': 'johndoe',
             'name': 'John Doe',
@@ -28,7 +31,7 @@ class TestAuthentication:
     @classmethod
     def teardown_class(cls):
         """ Teardown for this test case """
-        repo.AccountSchema.delete_all()
+        repo_factory.Account.delete_all()
 
     def test_authenticated_class_view(self):
         """ Test the authenticated class based view """
