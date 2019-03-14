@@ -9,6 +9,8 @@ from protean.core.tasklet import Tasklet
 from protean.utils.importlib import perform_import
 from authentic.utils import get_account_entity
 
+from . import logger
+
 
 def perform_authentication():
     """ Perform the authentication of the request """
@@ -45,7 +47,15 @@ def is_authenticated(optional=False):
             # then return unauthorized
             if not response.success and not optional:
                 renderer = perform_import(active_config.DEFAULT_RENDERER)
-                return renderer(response.value, 401, {})
+                error_message = {
+                    'code': 401,
+                    'message': {
+                        '_entity': 'Authentication Failed'
+                    }
+                }
+                logger.debug(
+                    f'Authentication failed due to error: {response.value}')
+                return renderer(error_message, 401, {})
 
             # Set the account on the request and call the actual function
             context.set_context({
@@ -75,7 +85,16 @@ def authenticated_viewset():
             # then return unauthorized
             if not response.success and request.method != 'GET':
                 renderer = perform_import(active_config.DEFAULT_RENDERER)
-                return renderer(response.value, 401, {})
+                error_message = {
+                    'code': 401,
+                    'message': {
+                        '_entity': 'Authentication Failed'
+                    }
+                }
+                print(response.value)
+                logger.debug(
+                    f'Authentication failed due to error: {response.value}')
+                return renderer(error_message, 401, {})
 
             # Set the account on the request and call the actual function
             context.set_context({

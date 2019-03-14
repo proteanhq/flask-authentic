@@ -38,9 +38,8 @@ class TestAuthentication:
         rv = self.client.get(f'/accounts/{self.account.id}')
         assert rv.status_code == 401
         assert rv.json == {
-            'code': 422,
-            'message': {'auth_scheme': 'Authentication scheme is mandatory',
-                        'credentials': 'Credentials is mandatory'}}
+            'code': 401,
+            'message': {'_entity': 'Authentication Failed'}}
 
         # Test with incorrect credentials
         headers = {
@@ -49,7 +48,7 @@ class TestAuthentication:
         rv = self.client.get(f'/accounts/{self.account.id}', headers=headers)
         assert rv.status_code == 401
         assert rv.json == {
-            'code': 422, 'message': {'password': 'Password is not correct.'}}
+            'code': 401, 'message': {'_entity': 'Authentication Failed'}}
 
         # Test with correct credentials now
         headers = {
