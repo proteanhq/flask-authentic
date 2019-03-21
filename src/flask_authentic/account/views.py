@@ -1,6 +1,4 @@
 """ Views for managing accounts and authentication """
-
-
 from authentic.usecases.core import ChangeAccountPasswordRequestObject
 from authentic.usecases.core import ChangeAccountPasswordUseCase
 from authentic.usecases.core import CreateAccountRequestObject
@@ -34,12 +32,12 @@ from flask_authentic.decorators import is_authenticated
 class AccountViewMixin:
     """ Reusable Mixin for retrieving the schema and serializer classes"""
 
-    def get_schema_cls(self):
+    def get_entity_cls(self):
         """ Get the schema class from the config """
-        if not active_config.ACCOUNT_SCHEMA_CLS:
+        if not active_config.ACCOUNT_ENTITY:
             raise ConfigurationError(
-                '`ACCOUNT_SCHEMA_CLS` has not been set in the config.')
-        return perform_import(active_config.ACCOUNT_SCHEMA_CLS)
+                '`ACCOUNT_ENTITY` has not been set in the config.')
+        return perform_import(active_config.ACCOUNT_ENTITY)
 
     def get_serializer_cls(self):
         """ Get the serializer class from the settings"""

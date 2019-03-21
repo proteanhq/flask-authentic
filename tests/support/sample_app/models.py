@@ -1,13 +1,12 @@
 """ Schemas used by the sample app"""
 from authentic.entities import Account
 from authentic.entities import Session
-from protean.core.repository import repo
-from protean.impl.repository.dict_repo import DictSchema
+from protean.impl.repository.dict_repo import DictModel
 
 from .entities import Human
 
 
-class AccountSchema(DictSchema):
+class AccountModel(DictModel):
     """ Schema for the Account Entity"""
 
     class Meta:
@@ -16,7 +15,7 @@ class AccountSchema(DictSchema):
         schema_name = 'accounts'
 
 
-class SessionSchema(DictSchema):
+class SessionModel(DictModel):
     """ Schema for the Session Entity"""
 
     class Meta:
@@ -25,15 +24,10 @@ class SessionSchema(DictSchema):
         schema_name = 'sessions'
 
 
-class HumanSchema(DictSchema):
+class HumanModel(DictModel):
     """ Schema for the Human Entity"""
 
     class Meta:
         """ Meta class for schema options"""
         entity = Human
         schema_name = 'humans'
-
-
-repo.register(HumanSchema)
-repo.register(SessionSchema)
-repo.register(AccountSchema)

@@ -1,14 +1,15 @@
 """ Decorators for handling authentications and permissions """
 from functools import wraps
 
+from authentic.utils import get_account_entity
 from authentic.utils import get_auth_backend
 from flask import request
 from protean.conf import active_config
 from protean.context import context
-from protean.core.exceptions import ConfigurationError
-from protean.core.repository import repo
 from protean.core.tasklet import Tasklet
 from protean.utils.importlib import perform_import
+
+from flask_authentic import logger
 
 
 def perform_authentication():
@@ -21,16 +22,13 @@ def perform_authentication():
         auth_payload['auth_scheme'] = auth_header[0]
         auth_payload['credentials'] = auth_header[1]
 
-    # Get the schema and the current backend
-    if not active_config.ACCOUNT_SCHEMA_CLS:
-        raise ConfigurationError(
-            '`ACCOUNT_SCHEMA_CLS` has not been set in the config.')
-    account_schema = perform_import(active_config.ACCOUNT_SCHEMA_CLS)
+    # Get the account entity and the current backend
+    account_entity = get_account_entity()
     auth_backend = get_auth_backend()
 
     # Perform the task and check the response
     response = Tasklet.perform(
-        repo, account_schema, auth_backend.AuthenticationUseCase,
+        account_entity, auth_backend.AuthenticationUseCase,
         auth_backend.AuthenticationRequestObject, auth_payload)
     return response
 
@@ -49,7 +47,15 @@ def is_authenticated(optional=False):
             # then return unauthorized
             if not response.success and not optional:
                 renderer = perform_import(active_config.DEFAULT_RENDERER)
-                return renderer(response.value, 401, {})
+                error_message = {
+                    'code': 401,
+                    'message': {
+                        '_entity': 'Authentication Failed'
+                    }
+                }
+                logger.debug(
+                    f'Authentication failed due to error: {response.value}')
+                return renderer(error_message, 401, {})
 
             # Set the account on the request and call the actual function
             context.set_context({
@@ -79,7 +85,15 @@ def authenticated_viewset():
             # then return unauthorized
             if not response.success and request.method != 'GET':
                 renderer = perform_import(active_config.DEFAULT_RENDERER)
-                return renderer(response.value, 401, {})
+                error_message = {
+                    'code': 401,
+                    'message': {
+                        '_entity': 'Authentication Failed'
+                    }
+                }
+                logger.debug(
+                    f'Authentication failed due to error: {response.value}')
+                return renderer(error_message, 401, {})
 
             # Set the account on the request and call the actual function
             context.set_context({
