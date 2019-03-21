@@ -26,7 +26,7 @@ from protean_flask.core.views import ListAPIResource
 from protean_flask.core.views import ShowAPIResource
 from protean_flask.core.views import UpdateAPIResource
 
-from ..decorators import is_authenticated
+from flask_authentic.decorators import is_authenticated
 
 
 class AccountViewMixin:

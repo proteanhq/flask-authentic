@@ -9,7 +9,7 @@ from protean.context import context
 from protean.core.tasklet import Tasklet
 from protean.utils.importlib import perform_import
 
-from . import logger
+from flask_authentic import logger
 
 
 def perform_authentication():
@@ -23,12 +23,12 @@ def perform_authentication():
         auth_payload['credentials'] = auth_header[1]
 
     # Get the account entity and the current backend
-    account_ent = get_account_entity()
+    account_entity = get_account_entity()
     auth_backend = get_auth_backend()
 
     # Perform the task and check the response
     response = Tasklet.perform(
-        account_ent, auth_backend.AuthenticationUseCase,
+        account_entity, auth_backend.AuthenticationUseCase,
         auth_backend.AuthenticationRequestObject, auth_payload)
     return response
 
