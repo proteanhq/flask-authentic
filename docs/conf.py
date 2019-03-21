@@ -26,7 +26,7 @@ project = 'Flask-Authentic'
 year = '2018'
 author = 'Subhash Bhushan C'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '0.0.6'
+version = release = '0.0.9'
 
 pygments_style = 'trac'
 templates_path = ['.']
