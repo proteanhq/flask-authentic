@@ -1,10 +1,10 @@
 """ Test the account views of authentic flask """
 import base64
 import json
+import pytest
 
 from authentic.utils import get_account_entity
 from passlib.hash import pbkdf2_sha256
-from protean.core.repository import repo_factory
 
 from .support.sample_app import app
 
@@ -14,32 +14,34 @@ Account = get_account_entity()
 class TestViews:
     """Class to test all the account blueprint views"""
 
-    @classmethod
-    def setup_class(cls):
-        """ Setup for this test case"""
+    @pytest.fixture(scope="function", autouse=True)
+    def client(self):
+        """ Setup client for test cases """
+        yield app.test_client()
 
-        # Create the test client
-        cls.client = app.test_client()
-        cls.auth_header = {
+    @pytest.fixture(scope="function", autouse=True)
+    def auth_header(self):
+        """ Setup auth header for test cases """
+        header = {
             'Authorization': b'Basic ' +
                              base64.b64encode(b'janedoe:duMmy@123')
         }
+        yield header
 
-        # Create a test account
-        cls.account = Account.create({
+    @pytest.fixture(scope="function", autouse=True)
+    def account(self):
+        """ Setup dummy account for test cases """
+
+        new_account = Account.create({
             'email': 'janedoe@domain.com',
             'username': 'janedoe',
             'name': 'Jane Doe',
             'password': pbkdf2_sha256.hash('duMmy@123'),
             'phone': '90080000800',
         })
+        yield new_account
 
-    @classmethod
-    def teardown_class(cls):
-        """ Teardown for this test case """
-        repo_factory.Account.delete_all()
-
-    def test_create(self):
+    def test_create(self, client, auth_header):
         """ Test creating an account """
 
         # Create an account object
@@ -50,9 +52,9 @@ class TestViews:
             'password': 'heLLo@123',
             'confirm_password': 'heLLo@123',
         }
-        rv = self.client.post(
+        rv = client.post(
             '/auth/accounts', data=json.dumps(account_info),
-            headers=self.auth_header, content_type='application/json')
+            headers=auth_header, content_type='application/json')
         assert rv.status_code == 201
 
         expected_resp = {
@@ -69,20 +71,20 @@ class TestViews:
         }
         assert rv.json == expected_resp
 
-    def test_update(self):
+    def test_update(self, client, auth_header, account):
         """ Test updating an existing account """
 
         # update an account object
         update_info = {
             'phone': '9007007007',
         }
-        rv = self.client.put(
-            f'/auth/accounts/{self.account.id}', data=json.dumps(update_info),
-            headers=self.auth_header, content_type='application/json')
+        rv = client.put(
+            f'/auth/accounts/{account.id}', data=json.dumps(update_info),
+            headers=auth_header, content_type='application/json')
         assert rv.status_code == 200
         expected_resp = {
             'account': {'email': 'janedoe@domain.com',
-                        'id': self.account.id,
+                        'id': account.id,
                         'is_active': True,
                         'is_locked': False,
                         'is_verified': False,
@@ -94,35 +96,48 @@ class TestViews:
         }
         assert rv.json == expected_resp
 
-    def test_show(self):
+    def test_show(self, client, auth_header, account):
         """ Test showing an existing account """
 
-        rv = self.client.get(
-            f'/auth/accounts/{self.account.id}', headers=self.auth_header)
+        rv = client.get(
+            f'/auth/accounts/{account.id}', headers=auth_header)
         assert rv.status_code == 200
         expected_resp = {
             'account': {'email': 'janedoe@domain.com',
-                        'id': self.account.id,
+                        'id': account.id,
                         'is_active': True,
                         'is_locked': False,
                         'is_verified': False,
                         'name': 'Jane Doe',
-                        'phone': '9007007007',
+                        'phone': '90080000800',
                         'timezone': None,
                         'title': None,
                         'username': 'janedoe'}
         }
         assert rv.json == expected_resp
 
-    def test_login(self):
+    def test_login(self, client, auth_header):
         """ Test logging in using account credentials """
+
+        # Create an account object
+        account_info = {
+            'username': 'johnny',
+            'email': 'johnny@domain.com',
+            'name': 'John Doe',
+            'password': 'heLLo@123',
+            'confirm_password': 'heLLo@123',
+        }
+        rv = client.post(
+            '/auth/accounts', data=json.dumps(account_info),
+            headers=auth_header, content_type='application/json')
+        assert rv.status_code == 201
 
         # Send the login request
         credentials = {
             'username_or_email': 'johnny',
             'password': 'heLLo@79',
         }
-        rv = self.client.post(
+        rv = client.post(
             f'/auth/login', data=json.dumps(credentials),
             content_type='application/json')
         assert rv.status_code == 422
@@ -131,24 +146,24 @@ class TestViews:
 
         # Try using the right credentials
         credentials['password'] = 'heLLo@123'
-        rv = self.client.post(
+        rv = client.post(
             f'/auth/login', data=json.dumps(credentials),
             content_type='application/json')
         assert rv.status_code == 200
         assert rv.json['username'] == 'johnny'
 
-    def test_logout(self):
+    def test_logout(self, client, auth_header):
         """ Test logging out of the application """
 
         # Send the logout request
-        rv = self.client.post(
-            '/auth/logout', data=json.dumps({}), headers=self.auth_header,
+        rv = client.post(
+            '/auth/logout', data=json.dumps({}), headers=auth_header,
             content_type='application/json')
 
         assert rv.status_code == 200
         assert rv.json == {'message': 'success'}
 
-    def test_update_password(self):
+    def test_update_password(self, client, auth_header):
         """ Test updating password of an account """
 
         # update an account object
@@ -157,19 +172,19 @@ class TestViews:
             'new_password': 'duMmy@456',
             'confirm_password': 'duMmy@456',
         }
-        rv = self.client.post(
+        rv = client.post(
             '/auth/accounts/change-password', data=json.dumps(password_update),
-            headers=self.auth_header, content_type='application/json')
+            headers=auth_header, content_type='application/json')
         assert rv.status_code == 200
 
         expected_resp = {'message': 'Success'}
         assert rv.json == expected_resp
 
-    def test_reset_password(self):
+    def test_reset_password(self, client, account):
         """ Test resetting the password for an account """
 
         # Send a reset password request
-        rv = self.client.post(
+        rv = client.post(
             '/auth/accounts/reset-password',
             data=json.dumps({'email': 'janedoe@domain.com'}),
             content_type='application/json')
@@ -179,7 +194,7 @@ class TestViews:
         assert rv.json == expected_resp
 
         # Get the verification token for the account
-        account = Account.get(self.account.id)
+        account = Account.get(account.id)
         assert account.verification_token is not None
 
         # Send the reset password request
@@ -187,7 +202,7 @@ class TestViews:
             'new_password': 'duMmy@789',
             'confirm_password': 'duMmy@789',
         }
-        rv = self.client.post(
+        rv = client.post(
             f'/auth/accounts/reset-password/{account.verification_token}',
             data=json.dumps(password_update),
             content_type='application/json')
@@ -196,12 +211,12 @@ class TestViews:
         expected_resp = {'message': 'Success'}
         assert rv.json == expected_resp
 
-    def test_delete(self):
+    def test_delete(self, client, account):
         """ Test deleting an existing account """
         auth_header = {
             'Authorization': b'Basic ' +
-                             base64.b64encode(b'janedoe:duMmy@789')
+                             base64.b64encode(b'janedoe:duMmy@123')
         }
-        rv = self.client.delete(
-            f'/auth/accounts/{self.account.id}', headers=auth_header)
+        rv = client.delete(
+            f'/auth/accounts/{account.id}', headers=auth_header)
         assert rv.status_code == 204
