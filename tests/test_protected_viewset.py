@@ -1,8 +1,8 @@
 """Module to test Protected Viewset functionality and features"""
 import base64
 import json
-import pytest
 
+import pytest
 from authentic.utils import get_account_entity
 from passlib.hash import pbkdf2_sha256
 
