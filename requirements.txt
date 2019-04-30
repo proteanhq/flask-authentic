@@ -1,5 +1,1 @@
-click==7.0
-protean==0.0.9
-authentic==0.0.9
-protean-flask==0.0.9
--r requirements/dev.txt
+-r requirements/prod.txt

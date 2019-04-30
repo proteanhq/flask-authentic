@@ -54,7 +54,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: OS/2',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Database',
         'Topic :: Software Development :: Libraries',
@@ -66,7 +66,7 @@ setup(
     ],
     install_requires=[
         'click==7.0',
-        'protean==0.0.9',
+        'protean==0.0.11',
         'authentic==0.0.9',
         'protean-flask==0.0.9'
     ],
