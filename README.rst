@@ -59,7 +59,7 @@ Development
 
 ::
 
-    pyenv virtualenv -p python3.6 3.6.5 protean-flask-dev
+    pyenv virtualenv -p python3.7 3.7.2 protean-flask-dev
 
 To run the all tests run::
 

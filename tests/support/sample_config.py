@@ -16,9 +16,9 @@ SECRET_KEY = 'abcdefghijklmn'
 TESTING = True
 
 # Define the repositories
-REPOSITORIES = {
+DATABASES = {
     'default': {
-        'PROVIDER': 'protean.impl.repository.dict_repo'
+        'PROVIDER': 'protean.impl.repository.dict_repo.DictProvider'
     }
 }
 
