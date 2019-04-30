@@ -67,8 +67,8 @@ setup(
     install_requires=[
         'click==7.0',
         'protean==0.0.11',
-        'authentic==0.0.9',
-        'protean-flask==0.0.9'
+        'authentic==0.0.11',
+        'protean-flask==0.0.11'
     ],
     extras_require={
         # eg:
